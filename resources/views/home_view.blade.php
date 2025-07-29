@@ -26,17 +26,7 @@
             <button type="submit">Register</button>
         </form>
     </div>
-    <div>
-            <h2>Login</h2>
-            <form action="{{ url('/login') }}" method="post">
-                @csrf
-                <label for="email">Email</label>
-                <input type="email" id="email" name="emailLogin" required>
-                <label for="password">Password</label>
-                <input type="password" id="password" name="passwordLogin" required>
-            <button type="submit">Login</button>
-        </form>
-    </div>
+   
     @endauth
     
 </body>
