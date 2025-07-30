@@ -2,10 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Obat;
 use Illuminate\Http\Request;
 
 class ObatController extends Controller
 {
+
+    public function showPublic(Obat $obat)
+    {
+        return view('public.obat_detail', compact('obat'));
+    }
+    public function indexPublic()
+    {
+        $obats = Obat::latest()->paginate(12); // Mengambil semua obat dengan paginasi
+        return view('public.obat_index', compact('obats'));
+    }
     /**
      * Display a listing of the resource.
      */

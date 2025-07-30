@@ -7,6 +7,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ApotekerController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\KeranjangController;
+use App\Http\Controllers\PelangganController;
 use App\Http\Controllers\PembelianController;
 use App\Http\Controllers\PenjualanController;
 
@@ -15,57 +17,50 @@ use App\Http\Controllers\PenjualanController;
 | Web Routes
 |--------------------------------------------------------------------------
 */
-Route::post('/register',[UserController::class,'register']);
-Route::post('/login',[UserController::class,'login']);
-Route::post('/logout',[UserController::class,'logout']);
-
-
-//Public Route
+// Halaman utama
 Route::get('/', [DashboardController::class, 'index'])->name('welcome');
+
 Route::get('/obat/{obat}', [ObatController::class, 'showPublic'])->name('obat.showPublic');
 
-// Auth
-Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/obat/{obat}', [ObatController::class, 'showPublic'])->name('obat.public.show');
+Route::get('/apoteker/{user}', [ApotekerController::class, 'showPublic'])->name('apoteker.public.show');
+Route::get('/produk', [ObatController::class, 'indexPublic'])->name('obat.public.index');
 
-
-// Customer Route
-Route::middleware(['auth', 'role:pelanggan'])->prefix('pelanggan')->name('pelanggan.')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'pelanggan'])->name('dashboard');
-    Route::get('/obat', [ObatController::class, 'indexPublic'])->name('obat.index');
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+    Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+    Route::post('/register', [AuthController::class, 'register']);
 });
 
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// pharmacist Route
+
+Route::middleware(['auth', 'role:pelanggan'])->prefix('pelanggan')->name('pelanggan.')->group(function () {
+    Route::get('/dashboard', [PelangganController::class, 'showDashboard'])->name('dashboard');
+    Route::get('/obat', [PelangganController::class, 'showObatList'])->name('obat.list');
+    Route::get('/keranjang', [PelangganController::class, 'showKeranjang'])->name('keranjang.index');
+    Route::get('/history', [PelangganController::class, 'showHistory'])->name('history.index');
+
+    Route::get('/keranjang', [KeranjangController::class, 'index'])->name('keranjang.index');
+    Route::post('/keranjang/add', [KeranjangController::class, 'add'])->name('keranjang.add');
+    Route::post('/keranjang/update', [KeranjangController::class, 'update'])->name('keranjang.update');
+    Route::post('/keranjang/remove', [KeranjangController::class, 'remove'])->name('keranjang.remove');
+});
+
 Route::middleware(['auth', 'role:apoteker'])->prefix('apoteker')->name('apoteker.')->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'apoteker'])->name('dashboard');
-    
-    // g, h) Resource untuk CRUD Obat (menambah, menghapus, dll)
+    Route::get('/dashboard', [ApotekerDashboardController::class, 'index'])->name('dashboard');
     Route::resource('/obat', ObatController::class);
-
-    // j) Halaman untuk menghapus data obat yang kadaluarsa
     Route::delete('/obat-kadaluarsa', [ObatController::class, 'destroyExpired'])->name('obat.destroyExpired');
-
-    // i) Halaman untuk melihat histori penjualan obat
     Route::get('/penjualan', [PenjualanController::class, 'index'])->name('penjualan.index');
     Route::get('/penjualan/{penjualan}', [PenjualanController::class, 'show'])->name('penjualan.show');
 });
 
 
-// Admin Route
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'admin'])->name('dashboard');
-    
-    // n) Halaman untuk mendaftar apoteker baru maupun mengedit
     Route::resource('/apoteker', ApotekerController::class)->except(['show']);
-
-    // m) Halaman untuk daftar supplier (CRUD)
     Route::resource('/supplier', SupplierController::class);
-    
-    // l) Halaman untuk melihat daftar pembelian obat
     Route::get('/pembelian', [PembelianController::class, 'index'])->name('pembelian.index');
     Route::get('/pembelian/{pembelian}', [PembelianController::class, 'show'])->name('pembelian.show');
 });

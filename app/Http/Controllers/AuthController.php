@@ -33,7 +33,7 @@ class AuthController extends Controller
             'role' => 'pelanggan',
         ]);
         Auth::login($user);
-        return redirect('/');
+        return redirect('/pelanggan/dashboard');
     }
 
     public function login(Request $request){
@@ -50,7 +50,7 @@ class AuthController extends Controller
             } elseif ($user->role === 'apoteker') {
                 return redirect()->intended('/apoteker/dashboard');
             } elseif ($user->role === 'pelanggan') {
-                return redirect()->intended('/'); // Redirect pelanggan ke halaman utama
+                return redirect()->intended('/pelanggan/dashboard'); // Redirect pelanggan ke halaman utama
             }
             
             // Fallback default jika role tidak terdefinisi

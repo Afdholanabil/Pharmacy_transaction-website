@@ -1,21 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
-use App\Models\User;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class ApotekerController extends Controller
+class AdminSupplierController extends Controller
 {
-
-    public function showPublic(User $user)
-    {
-        // Pastikan hanya user dengan role apoteker yang bisa diakses
-        if ($user->role !== 'apoteker') {
-            abort(404);
-        }
-        return view('public.apoteker_detail', compact('user'));
-    }
     /**
      * Display a listing of the resource.
      */

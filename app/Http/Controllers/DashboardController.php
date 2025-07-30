@@ -2,33 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Obat;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function index()
+     public function index()
     {
-        $obats=[
-            [
-                'nama' => 'Paracetamol 500mg',
-                'deskripsi' => 'Meredakan sakit kepala, sakit gigi, dan demam.',
-                'harga' => 8000,
-                'gambar' => 'https://placehold.co/600x400/28a745/white?text=Paracetamol'
-            ],
-            [
-                'nama' => 'Amoxicillin 500mg',
-                'deskripsi' => 'Antibiotik untuk mengatasi infeksi bakteri. Membutuhkan resep dokter.',
-                'harga' => 15000,
-                'gambar' => 'https://placehold.co/600x400/007bff/white?text=Amoxicillin'
-            ],
-            [
-                'nama' => 'Vitamin C 500mg',
-                'deskripsi' => 'Membantu menjaga daya tahan tubuh dan kesehatan kulit.',
-                'harga' => 25000,
-                'gambar' => 'https://placehold.co/600x400/ffc107/white?text=Vitamin+C'
-            ],
-        ];
+        // Ambil 8 obat terbaru dari database
+        $obats = Obat::latest()->take(8)->get();
 
-        return view('welcome',compact('obats'));
+        // Ambil semua user dengan role 'apoteker' yang aktif
+        $apotekers = User::where('role', 'apoteker')->where('status_aktif', true)->get();
+
+        return view('welcome', compact('obats', 'apotekers'));
     }
+    
 }
