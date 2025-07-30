@@ -14,14 +14,10 @@ class Obat extends Model
     protected $keyType = 'string';
 
     protected $fillable = [
-        'KdObat',
-        'NmObat',
-        'Jenis',
-        'Satuan',
-        'HargaBeli',
-        'HargaJual',
-        'Stok',
-        'deskripsi',
-        'KdSuplier',
+        'KdObat', 'NmObat', 'Jenis', 'Satuan', 'HargaBeli', 'HargaJual', 'Stok', 'tanggal_kadaluarsa', 'deskripsi', 'KdSuplier',
     ];
+
+    public function penjualanDetails() {
+        return $this->hasMany(PenjualanDetail::class, 'KdObat', 'KdObat');
+    }
 }

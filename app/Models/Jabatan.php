@@ -5,10 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class PembelianDetail extends Model
+class Jabatan extends Model
 {
     use HasFactory;
-    public function obat() {
-        return $this->belongsTo(Obat::class, 'KdObat', 'KdObat');
-    }
+    protected $fillable = ['nama_jabatan'];
 }
